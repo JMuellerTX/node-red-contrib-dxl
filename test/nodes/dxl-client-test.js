@@ -125,6 +125,34 @@ describe('dxl-client node', function () {
           })
       }, done)
     })
+
+    it('should return 400 for path traversal in commonOrCsrFileName',
+      function (done) {
+        const provisionConfigStub = sinon.stub(DxlConfig, 'provisionConfig')
+        testHelpers.loadNodeRed(function (RED) {
+          RED.httpAdmin.use(bodyParser.json())
+          testNode(RED)
+        }, [], function () {
+          nodeRedTestHelper.request()
+            .post('/dxl-client/provision-config')
+            .send({
+              configDir: '/the/confdir',
+              commonOrCsrFileName: '../evil',
+              hostInfo: {
+                hostname: 'myhost',
+                user: 'myuser',
+                password: 'mypass'
+              }
+            })
+            .expect(400, 'Invalid commonOrCsrFileName')
+            .end(function (error) {
+              provisionConfigStub.called.should.be.false()
+              provisionConfigStub.restore()
+              done(error)
+            })
+        }, done)
+      }
+    )
   })
 
   context('provisioned files HTTP request', function () {

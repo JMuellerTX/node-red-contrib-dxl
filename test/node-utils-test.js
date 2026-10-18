@@ -75,6 +75,11 @@ describe('NodeUtils', function () {
         NodeUtils.extractProperty(obj, 'prop2').should.equal('val2')
         obj.should.eql({ prop1: 'val1', prop3: 'val3' })
       })
+    it('should not return inherited prototype properties', function () {
+      const obj = { prop1: 'val1' }
+      Boolean(NodeUtils.extractProperty(obj, 'toString') === undefined).should.be.true()
+      Boolean(NodeUtils.extractProperty(obj, 'constructor') === undefined).should.be.true()
+    })
   })
   context('.removeProperties', function () {
     it('should remove properties from an object', function () {

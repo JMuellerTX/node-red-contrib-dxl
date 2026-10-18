@@ -362,6 +362,14 @@ module.exports = function (RED) {
     RED.auth.needsPermission('dxl-client.write'), function (request, response) {
       const body = request.body
       if (typeof body === 'object') {
+        if (typeof body.commonOrCsrFileName !== 'string' ||
+          !body.commonOrCsrFileName ||
+          body.commonOrCsrFileName.indexOf('/') !== -1 ||
+          body.commonOrCsrFileName.indexOf('\\') !== -1 ||
+          body.commonOrCsrFileName.indexOf('..') !== -1) {
+          response.status(400).send('Invalid commonOrCsrFileName')
+          return
+        }
         try {
           if (body.hostInfo && typeof body.hostInfo.insecure === 'string') {
             body.hostInfo.insecure = (body.hostInfo.insecure === 'true')
@@ -387,6 +395,7 @@ module.exports = function (RED) {
   )
 
   RED.httpAdmin.get('/dxl-client/defaults',
+    RED.auth.needsPermission('dxl-client.read'),
     function (request, response) {
       response.status(200).send({
         configDir: path.join(RED.settings.userDir || '', 'dxl')
@@ -395,6 +404,7 @@ module.exports = function (RED) {
   )
 
   RED.httpAdmin.get('/dxl-client/provisioned-files',
+    RED.auth.needsPermission('dxl-client.read'),
     function (request, response) {
       const existingFiles = []
       const configDir = request.query.configDir
