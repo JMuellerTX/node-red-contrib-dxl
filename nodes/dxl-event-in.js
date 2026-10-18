@@ -64,8 +64,7 @@ module.exports = function (RED) {
             dxlMessage: event
           }
           try {
-            event.payload = MessageUtils.decodePayload(event, node._payloadType)
-            msg.payload = event.payload
+            msg.payload = MessageUtils.decodePayload(event, node._payloadType)
             node.send(msg)
           } catch (e) {
             msg.payload = event.payload

@@ -57,7 +57,9 @@
                 hostname: $('#node-provision-input-hostname').val(),
                 user: $('#node-provision-input-username').val(),
                 password: $('#node-provision-input-password').val(),
-                port: $('#node-provision-input-port').val()
+                port: $('#node-provision-input-port').val(),
+                truststore: $('#node-provision-input-truststore').val() || undefined,
+                insecure: $('#node-provision-input-insecure').is(':checked') || undefined
               }
             },
             success: function (response) {
@@ -188,6 +190,14 @@
               '<label for="node-provision-input-config-dir"><i class="fa fa-file-text-o"></i> Config dir</label>' +
               '<input type="text" id="node-provision-input-config-dir" placeholder="Config dir"' +
               'value="' + configFile.replace(/[\\/]dxlclient.config/, '') + '">' +
+              '</div>').appendTo(dialogForm)
+            $('<div class="form-row">' +
+              '<label for="node-provision-input-truststore"><i class="fa fa-certificate"></i> Truststore</label>' +
+              '<input type="text" id="node-provision-input-truststore" placeholder="Optional CA bundle path">' +
+              '</div>').appendTo(dialogForm)
+            $('<div class="form-row">' +
+              '<label for="node-provision-input-insecure"><i class="fa fa-unlock"></i> Insecure</label>' +
+              '<input type="checkbox" id="node-provision-input-insecure" style="width: auto; vertical-align: top;">' +
               '</div>').appendTo(dialogForm)
             Object.keys(fieldValidators).forEach(function (fieldName) {
               const element = $('#node-provision-input-' + fieldName)

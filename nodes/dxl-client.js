@@ -363,6 +363,9 @@ module.exports = function (RED) {
       const body = request.body
       if (typeof body === 'object') {
         try {
+          if (body.hostInfo && typeof body.hostInfo.insecure === 'string') {
+            body.hostInfo.insecure = (body.hostInfo.insecure === 'true')
+          }
           Config.provisionConfig(body.configDir, body.commonOrCsrFileName,
             body.hostInfo,
             {
