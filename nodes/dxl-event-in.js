@@ -58,13 +58,18 @@ module.exports = function (RED) {
       if (nodeConfig.topic) {
         this._client.registerUserNode(this)
         const eventCallback = function (event) {
+          const dxlEvent = Object.assign(
+            Object.create(Object.getPrototypeOf(event)),
+            event
+          )
           const msg = {
-            topic: event.destinationTopic,
-            dxlEvent: event,
-            dxlMessage: event
+            topic: dxlEvent.destinationTopic,
+            dxlEvent,
+            dxlMessage: dxlEvent
           }
           try {
-            msg.payload = MessageUtils.decodePayload(event, node._payloadType)
+            dxlEvent.payload = MessageUtils.decodePayload(dxlEvent, node._payloadType)
+            msg.payload = dxlEvent.payload
             node.send(msg)
           } catch (e) {
             msg.payload = event.payload
